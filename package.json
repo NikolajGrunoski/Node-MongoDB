@@ -1,0 +1,23 @@
+{
+  "name": "node-mongodb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NikolajGrunoski/Node-MongoDB.git"
+  },
+  "author": "Nikolaj Grunoski",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NikolajGrunoski/Node-MongoDB/issues"
+  },
+  "homepage": "https://github.com/NikolajGrunoski/Node-MongoDB#readme",
+  "dependencies": {
+    "mongoose": "5.7.8"
+  }
+}
