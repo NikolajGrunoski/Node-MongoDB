@@ -49,8 +49,35 @@ const save = (data) => {
     });
 };
 
+const remove = (id) => {
+    return new Promise((success, fail) => {
+        Film.findByIdAndDelete(id, err => {
+            if(err) {
+                return fail(err); 
+            }
+            return success();
+        });
+    });
+};
+
+const replace = (id, data) => {
+    return new Promise ((success, fail) => {
+        Film.findByIdAndUpdate(id, data, err => {
+            if(err) {
+                return fail(err);
+            }
+            return success();
+        });
+    });
+};
+
+
+
 module.exports = {
     getAll,
     getOne,
-    save
+    save,
+    remove,
+    replace,
+   
 }
