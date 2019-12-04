@@ -11,11 +11,11 @@ var c = config.getConfig('db');
 DBconn.init(c);
 const api = express();
 api.use(bodyParser.json());
-api.use(bodyParser.json());
-api.use(jwt(
-    { secret: config.getConfig('jwt').key })
 
-);
+// api.use(jwt(
+//     { secret: config.getConfig('jwt').key })
+
+// );
 
 api.get('/api/v1/filmovi', filmovi.getAll);
 api.get('/api/v1/filmovi/:id', filmovi.getOne);
