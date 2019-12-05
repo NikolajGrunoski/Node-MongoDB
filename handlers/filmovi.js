@@ -1,4 +1,4 @@
-const mFilmovi = require('../models/filmovi');
+ const mFilmovi = require('../models/filmovi');
 
 const getAll = (req, res) => {
 
