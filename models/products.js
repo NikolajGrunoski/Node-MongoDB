@@ -1,41 +1,83 @@
 var mongoose = require('mongoose');
 
-var Products = mongoose.model(
+var Product = mongoose.model(
     'products',
     new mongoose.Schema({
-        product_name: String,
-        product_type: String,
-        product_description: String,
-        purchase_date: Date,
-        product_price: String
+        name: String,
+        type: String,
+        description: String,
+        date: Date,
+        price: String,
+        user_id: String,
     })
 );
 
-const createProduct = (data) => {
+const getAll = (q, sort) => {
     return new Promise((success, fail) => {
-        var product = new Products(data);
-        product.save(err => {
-            if(err){
+        Product.find(q, {}, { sort: sort }, (err, data) => {
+            if (err) {
+                return fail(err);
+            }
+            return success();
+        })
+
+    });
+}
+
+const getOne = (id, userID) => {
+    return new Promise((success, fail) => {
+        Product.find({ user_id: id, user_id: userID }, (err, data) => {
+            if (err) {
+                return fail(err);
+            }
+            return success(data[0]);
+        });
+    });
+};
+
+const save = (data) => {
+    return new Promise((success, fail) => {
+        var p = new Promise(data);
+        p.save(data, err => {
+            if (err) {
                 return fail(err);
             }
             return success();
         });
     });
-}
+};
 
-// const getUserPasswordByEmail = (email) => {
-//     return new Promise((success, fail) => {
-//         User.find({email: email}, {password: 1, email: 1, first_name: 1, last_name: 1}, (err, data) => {
-//             if(err){
-//                 return fail(err);
-//             }
-//             return success(data[0]);
-//         });
-//     });
-// }
+const remove = (id) => {
+    return new Promise((success, fail) => {
+        Product.findByIdAndDelete(id, err => {
+            if (err) {
+                return fail(err);
+            }
+            return success();
+        });
+    });
+};
+
+const replace = (id, data) => {
+    return new Promise((success, fail) => {
+        Product.findByIdAndUpdate(id, data, err => {
+            if (err) {
+                return fail(err);
+            }
+            return success();
+        });
+    });
+};
+
+
+
+
+
 
 module.exports = {
-    createProduct,
-    // getUserPasswordByEmail
-
+    getAll,
+    getOne,
+    save,
+    remove,
+    replace
 }
