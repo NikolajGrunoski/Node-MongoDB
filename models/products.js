@@ -9,18 +9,25 @@ var Product = mongoose.model(
         date: Date,
         price: String,
         user_id: String,
+    },
+    {
+        collection: 'products'
     })
+
 );
 
-const getAll = (q, sort) => {
+const getAll = () => {
+    console.log('test');
     return new Promise((success, fail) => {
-        Product.find(q, {}, { sort: sort }, (err, data) => {
+        Product.find((data, err) => {
             if (err) {
+                console.log(err);
                 return fail(err);
             }
-            return success();
-        })
-
+            console.log('in getAll model');
+            console.log(data);
+            return success(data);
+        });
     });
 }
 

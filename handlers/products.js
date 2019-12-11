@@ -2,33 +2,9 @@ const mProducts = require('../models/products');
 
 const getAll = (req, res) => {
 
-    let q = {user_id: req.user.id};
-    let sort = {};
-
-    if(req.query.date_from != undefined) {
-        if(q.purchaseDate == undefined){
-            q.purchaseDate = {};
-        }
-        q.purchaseDate.$gte = new Date(Number(req.query.date_from));
-    }
-
-    if(req.query.date_to != undefined) {
-        if(q.purchaseDate == undefined){
-            q.purchaseDate = {};
-        }
-        q.purchaseDate.$lte = new Date(Number(req.query.date_to));
-    }
-
-    if(req.query.sort != undefined) {
-        let sortable = ['purchaseDate', 'productPrice'];
-        let sq = req.query.sort.split(':');
-        if(sortable.indexOf(sq[0]) > -1){
-            sort[sq[0]] = sq[1] == 'desc' ? -1 : 1;
-        }
-    }
-
-    mProducts.getAll(q, sort)
+    mProducts.getAll()
         .then(data => {
+            console.log(data);
             res.status(200).send(data);
         })
         .catch(err => {
@@ -57,7 +33,7 @@ const save = (req, res) => {
     if (data.price == undefined) { er++; }
 
     if (er == 0) {
-        mProducts.save({...data, user_id: req.user.id})
+        mProducts.save({ ...data, user_id: req.user.id })
             .then(() => {
                 res.status(201).send('Created');
             })
