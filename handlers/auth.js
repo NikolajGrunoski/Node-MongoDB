@@ -3,7 +3,9 @@ const vUsers = require('../validators/users');
 var validator = require('node-input-validator');
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
-const config = require('../config/index.js')
+const config = require('../config/index.js');
+const randomString = require('randomstring');
+const sgMail = require('@sendgrid/mail');
 
 const register = (req, res) => {
     var v = new validator.Validator(req.body, vUsers.createUser);
@@ -20,8 +22,25 @@ const register = (req, res) => {
                             throw new Error(err);
                             return;
                         }
-                        return mUsers.createUser({ ...req.body, password: hash });
+                        var confirm_hash = randomString.generate({
+                            length: 30,
+                            charset: 'alphanumeric'
+                        });
+                        mUsers.createUser({
+                            ...req.body,
+                            password: hash,
+                            onfirm_hash: confirm_hash,
+                            confirmed: false
+                        });
                     });
+                    const msg = {
+                        to: 'nikolaj.grunoski@gmail.com',
+                        subject: 'Sending with Twilio SendGrid is Fun',
+                        text: 'and easy to do anywhere, even with Node.js',
+                        html: `<a href='http://localhost:8081/api/api/v1/confirm/${confirm_hash}'>Click here to confirm your account <a/>`,
+                    };
+                    sgMail.send(msg);
+                    return;
                 });
 
             } else {
@@ -52,7 +71,7 @@ const login = (req, res) => {
                     var tokenData = {
                         id: data._id,
                         full_name: `${data.first_name} ${data.last_name}`,
-                        email: data.email 
+                        email: data.email
                     };
                     var token = jwt.sign(tokenData, config.getConfig('jwt').key);
                     return res.status(200).send({ jwt: token });
@@ -90,11 +109,31 @@ const changePassword = (req, res) => {
     return res.status(200).send('ok')
 }
 
+const confirm = (req, res) => {
+    // koga nekoj kje klikne na 
+    // http://localhost:8080/auth/v1/confirm/[CONFIRM_HASH]
+    // go nosi na ovoj handler
+    // go prezemate hash-ot
+    // proveruvate vo baza dali vakov hash postoi
+    // ako postoi na istiot record mu setirate
+    // confirmed: true
+
+    var hash = req.params.confirm_hash;
+    mUsers.confirmUserAccount(hash)
+        .then(() => {
+            return res.status(200).send('ok');
+        })
+        .catch((err) => {
+            return res.status(200).send('Internal Server Error');
+        })
+}
+
 module.exports = {
     register,
     login,
     renew,
     resetLink,
     resetPassword,
-    changePassword
+    changePassword,
+    confirm
 }
