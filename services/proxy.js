@@ -20,4 +20,11 @@ api.all('/api/v1/products/*', (req, res) => {
     apiProxy.web(req, res, {target: 'http://localhost:8083'});
 });
 
-api.listen(5000);
+api.listen(process.env.PORT, err => {
+    if(err){
+        console.log('could not start server');
+        console.log(err);
+        return;
+    }
+    console.log('server successfuly started on port 5000')
+});
